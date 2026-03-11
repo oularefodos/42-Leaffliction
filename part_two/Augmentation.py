@@ -4,6 +4,7 @@ import sys
 import cv2 as cv
 import imghdr
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 def display_images(images, titles):
@@ -15,9 +16,45 @@ def display_images(images, titles):
         plt.axis('off')
     plt.show()
 
+def get_projective_image(image):
+    h, w = image.shape[:2]
+
+    src = np.float32([
+        [0,     0],
+        [w - 1, 0],
+        [w - 1, h - 1],
+        [0,     h - 1]
+    ])
+
+    dst = np.float32([
+        [(w - 1) * 0.25, 0],
+        [(w - 1) * 0.75, (h - 1) * 0.25],
+        [w - 1,          (h - 1) * 0.8 ],
+        [0,              (h - 1) * 0.5 ]
+    ])
+
+    M = cv.getPerspectiveTransform(src, dst)
+    return cv.warpPerspective(image, M, (w, h))
+
+def add_contrast(image, alpha):
+    contrasted_image = cv.convertScaleAbs(image, alpha=alpha, beta=0)
+    return contrasted_image
+
 def scale_image(image, scale_factor):
-    scaled_image = cv.resize(image, None, fx=scale_factor, fy=scale_factor)
-    return scaled_image
+    h, w = image.shape[:2]
+
+    new_w = int(w * scale_factor)
+    new_h = int(h * scale_factor)
+
+    resized = cv.resize(image, (new_w, new_h))
+
+    cx = new_w // 2
+    cy = new_h // 2
+
+    x1 = cx - w // 2
+    y1 = cy - h // 2
+
+    return resized[y1:y1+h, x1:x1+w]
 
 def blur_image(image, kernel_size):
     blurred_image = cv.GaussianBlur(image, (kernel_size, kernel_size), 0)
@@ -58,10 +95,20 @@ def augment_image(image_path):
     images.append(blurred)
     titles.append('Gaussian Blurred')
 
-    # scale the image by a factor of 0.5
-    scaled = scale_image(img, 4)
+    # scale the image by a factor of 1.3
+    scaled = scale_image(img, 1.3)
     images.append(scaled)
-    titles.append('Scaled by 0.5')
+    titles.append('Scaled by 1.3')
+
+    # add contrast to the image
+    contrasted = add_contrast(img, 1.5)
+    images.append(contrasted)
+    titles.append('Increased Contrast')
+
+    # apply a projective transformation to the image
+    projected = get_projective_image(img)
+    images.append(projected)
+    titles.append('Projective')
 
     display_images(images, titles)
 
