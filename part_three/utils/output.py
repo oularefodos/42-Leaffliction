@@ -84,7 +84,7 @@ class Output:
 
             src_index = args.index('-src')
             dst_index = args.index('-dst')
-            filter_indices = [i for i, arg in enumerate(args) if arg[1:] in cls.filters]
+            filter_indices = [i for i, arg in enumerate(args) if arg.startswith('-') and arg[1:] in cls.filters]
 
             if src_index == -1 or dst_index == -1 or len(filter_indices) == 0:
                 Output.help()

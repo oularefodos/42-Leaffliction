@@ -8,7 +8,7 @@ from tqdm import tqdm
 
 
 def transform_batch(src: Path, dst: Path, filter: Output.Filter):
-    extensions = ['.jpg', 'png', '.jpeg', '.JPG', '.PNG', '.JPEG']
+    extensions = ['.jpg', '.png', '.jpeg', '.JPG', '.PNG', '.JPEG']
     mode = 'save'
 
     image_paths = list(
