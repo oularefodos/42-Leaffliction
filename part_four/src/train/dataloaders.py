@@ -5,12 +5,12 @@ import torchvision.transforms as transforms
 
 BATCH_SIZE = 64
 NUM_WORKERS=2
+transform = transforms.Compose([
+    transforms.Resize(size=(128, 128)),
+    transforms.ToTensor()
+])
 
 def make_dataloaders(train_path: Path, test_path: Path):
-    transform = transforms.Compose([
-        transforms.Resize(size=(128, 128)),
-        transforms.ToTensor()
-    ])
 
     train_set = ImageFolder(train_path, transform=transform)
     test_set = ImageFolder(test_path, transform=transform)
