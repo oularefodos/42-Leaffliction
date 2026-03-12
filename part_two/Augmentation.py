@@ -2,10 +2,8 @@ import argparse
 import os
 import sys
 import cv2 as cv
-import imghdr
 import matplotlib.pyplot as plt
 import numpy as np
-
 
 def display_images(images, titles):
     plt.figure(figsize=(10, 5))
