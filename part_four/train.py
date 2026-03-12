@@ -12,7 +12,7 @@ from src.model.cnn import CNN
 def main():
     # preparing data
     root = parse_folder(sys.argv)
-    train_path, test_path = augment(root)
+    train_path, test_path = augment(root, train_size=0.8, seed=42)
 
     # using device agnostic execution
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -26,7 +26,7 @@ def main():
         test_loader=test_dl,
         model=model,
         device=device,
-        epochs=20
+        epochs=10
     )
 
     # saving the model parameters

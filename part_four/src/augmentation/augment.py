@@ -1,7 +1,8 @@
 from pathlib import Path
 from typing import Optional
+from .train_test_split import train_test_split
 
-def augment(root: Path, test_size=0.8, seed: Optional[int] = None):
+def augment(root: Path, train_size=0.8, seed: Optional[int] = None):
     """
     This function does:
      
@@ -10,4 +11,6 @@ def augment(root: Path, test_size=0.8, seed: Optional[int] = None):
 
     It returns: [test_path, test_path]
     """
-    return (root, root)
+    train_path, test_path = train_test_split(root, train_size, seed)
+
+    return (train_path, test_path)
