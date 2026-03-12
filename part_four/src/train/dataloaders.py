@@ -3,7 +3,8 @@ from torch.utils.data import DataLoader
 from torchvision.datasets import ImageFolder
 import torchvision.transforms as transforms
 
-BATCH_SIZE = 32
+BATCH_SIZE = 64
+NUM_WORKERS=2
 
 def make_dataloaders(train_path: Path, test_path: Path):
     transform = transforms.Compose([
@@ -18,11 +19,15 @@ def make_dataloaders(train_path: Path, test_path: Path):
         dataset=train_set,
         batch_size=BATCH_SIZE,
         shuffle=True,
+        num_workers=NUM_WORKERS,
     )
 
     test_dataloader = DataLoader(
         dataset=test_set,
-        batch_size=BATCH_SIZE
+        batch_size=BATCH_SIZE,
+        num_workers=NUM_WORKERS,
     )
 
-    return (train_dataloader, test_dataloader)
+    classes = train_set.classes
+
+    return (train_dataloader, test_dataloader, classes)

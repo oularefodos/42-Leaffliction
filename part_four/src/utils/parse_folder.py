@@ -36,7 +36,3 @@ def parse_folder(argv):
         sys.exit(1)
     
     return root
-
-
-
-

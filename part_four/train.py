@@ -19,17 +19,22 @@ def main():
     
     # training the model
     set_seed(42)
-    train_dl, _ = make_dataloaders(train_path, test_path)
+    train_dl, test_dl, classes = make_dataloaders(train_path, test_path)
     model = CNN().to(device)
     model = train(
-        loader=train_dl,
+        train_loader=train_dl,
+        test_loader=test_dl,
         model=model,
         device=device,
         epochs=20
     )
 
     # saving the model parameters
-    torch.save(model.state_dict(), './model.pth')
+    checkpoint = {
+        "model_state_dict": model.state_dict(),
+        "classes": classes
+    }
+    torch.save(checkpoint, './model.pth')
 
 if __name__ == "__main__":
     main()
