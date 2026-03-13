@@ -39,7 +39,7 @@ class CNN(nn.Module):
         )
         self.dense = nn.Sequential(
             nn.Flatten(),
-            nn.LazyLinear(dense_hidden_size),
+            nn.LazyLinear(dense_hidden_size * 2),
             nn.ReLU(),
             nn.Linear(dense_hidden_size * 2, dense_hidden_size),
             nn.ReLU(),
