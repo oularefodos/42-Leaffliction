@@ -1,6 +1,7 @@
 #!.venv/bin/python
 import sys
 import torch
+from torch.cpu import is_available
 from src.utils.seed import set_seed
 from src.train.dataloaders import make_dataloaders
 from src.train.train import train
@@ -15,7 +16,13 @@ def main():
     train_path, test_path = augment(root, train_size=0.8, seed=42)
 
     # using device agnostic execution
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = "cpu"
+    if torch.cuda.is_available():
+        device = "cuda"
+    elif torch.mps.is_available():
+        device = "mps"
+    
+    print(f"INFO: running on {device}")
     
     # training the model
     set_seed(42)
@@ -26,7 +33,7 @@ def main():
         test_loader=test_dl,
         model=model,
         device=device,
-        epochs=10
+        epochs=30
     )
 
     # saving the model parameters
