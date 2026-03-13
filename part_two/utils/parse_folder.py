@@ -30,6 +30,15 @@ def get_min_image_number(root: Path):
                 min_images = n_images
     return min_images
 
+def get_max_image_number(root: Path):
+    max_images = 0
+    for item in root.iterdir():
+        if item.is_dir():
+            n_images = sum([len(list(item.glob(f"*.{ext}"))) for ext in IMAGE_EXTENSIONS])
+            if n_images > max_images:
+                max_images = n_images
+    return max_images
+
 def parse_folder(path):    
     root = Path(path)
 

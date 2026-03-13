@@ -1,9 +1,8 @@
 import argparse
-import os
 from pathlib import Path
 import sys
 import cv2 as cv
-from utils.parse_folder import (get_min_image_number, parse_folder, is_image)
+from utils.parse_folder import (get_max_image_number, get_min_image_number, parse_folder, is_image)
 from utils.transformation import (
     get_projective_image,
     add_contrast,
@@ -23,9 +22,9 @@ def augment_image(image_path: Path, transfor_max=6):
     transformations = [
         ('Flipped', flip_image(img, 1)),
         ('Rotated', rotate_image(img, 45)),
-        ('Gaussian', blur_image(img, 5)),
+        ('Blurred', blur_image(img, 5)),
         ('Scaled', scale_image(img, 1.3)),
-        ('Increased', add_contrast(img, 1.5)),
+        ('Contrast', add_contrast(img, 1.5)),
         ('Projective', get_projective_image(img))
     ]
     if transfor_max > len(transformations):
@@ -34,20 +33,25 @@ def augment_image(image_path: Path, transfor_max=6):
         images.append((title, transformed))
     return images
 
-def balance_classes(root: Path):
+def balance_classes(root: Path, save_in_same_folder=False):
     min_images = get_min_image_number(root)
+    max_images = get_max_image_number(root)
     number_of_augmentations = 6
-    max_images = min_images * number_of_augmentations
+    total_images_after_augmentation = min_images * number_of_augmentations
 
-    aumented_dataset_main_path = "augmented_dataset"
+    if total_images_after_augmentation < max_images:
+        print("The minimum number of class should not be less than 6 times the maximum number of images in any class.", file=sys.stderr)
+        sys.exit(1)
+
+    aumented_dataset_main_path = "augmented_directory"
 
     for item in root.iterdir():
         if item.is_dir():
             images = [img for img in item.iterdir() if is_image(img)]
             n_images = len(images)
-            needed_augmentations = max_images - n_images
+            needed_augmentations = total_images_after_augmentation - n_images
 
-            print(f"needed_augmentations: {needed_augmentations}, max images: {max_images}, n_images: {n_images}")
+            print(f"needed_augmentations: {needed_augmentations}, max images: {total_images_after_augmentation}, n_images: {n_images}")
             if needed_augmentations > 0:
                 for im in images:
                     if needed_augmentations >= 0:
@@ -55,17 +59,21 @@ def balance_classes(root: Path):
                         for prefix, aug_img in augmented_images:
                             if needed_augmentations <= 0:
                                 break
-                            output_dir = Path(aumented_dataset_main_path) / item.name
-                            output_dir.mkdir(parents=True, exist_ok=True)
-                            output_path = output_dir / f"{im.stem}_{prefix}{im.suffix}"
+                            if save_in_same_folder:
+                                output_path = im.parent / f"{im.stem}_{prefix}{im.suffix}"
+                            else:
+                                output_dir = Path(aumented_dataset_main_path) / item.name
+                                output_dir.mkdir(parents=True, exist_ok=True)
+                                output_path = output_dir / f"{im.stem}_{prefix}{im.suffix}"
                             cv.imwrite(str(output_path), aug_img)
                             needed_augmentations -= 1
                     # write the original image to the augmented dataset as well
-                    output_dir = Path(aumented_dataset_main_path) / item.name
-                    output_dir.mkdir(parents=True, exist_ok=True)
-                    output_path = output_dir / im.name
-                    cv.imwrite(str(output_path), cv.imread(str(im)))
-                    print(f"Saved augmented image to {output_path}. Remaining augmentations needed: {needed_augmentations}")
+                    if not save_in_same_folder:
+                        output_dir = Path(aumented_dataset_main_path) / item.name
+                        output_dir.mkdir(parents=True, exist_ok=True)
+                        output_path = output_dir / im.name
+                        cv.imwrite(str(output_path), cv.imread(str(im)))
+                        print(f"Saved augmented image to {output_path}. Remaining augmentations needed: {needed_augmentations}")
                      
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -82,6 +90,11 @@ if __name__ == '__main__':
 
     if is_image(path):
         images = augment_image(path)
+        # save augmented images to the same directory as the original image
+        for i, (title, aug_img) in enumerate(images):
+            output_path = path.parent / f"{path.stem}_{title}{path.suffix}"
+            cv.imwrite(str(output_path), aug_img)
+            print(f"Saved augmented image to {output_path}.")
         display_images(images)
     elif parse_folder(path):
         balance_classes(path)
