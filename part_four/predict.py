@@ -27,10 +27,14 @@ def main():
     img = transform(img_raw).unsqueeze(dim=0)
 
     # load model
-    checkpoint = torch.load('./model.pth')
-    classes = checkpoint['classes']
-    model = CNN()
-    model.load_state_dict(checkpoint['model_state_dict'])
+    try:
+        checkpoint = torch.load('./model.pth')
+        classes = checkpoint['classes']
+        model = CNN()
+        model.load_state_dict(checkpoint['model_state_dict'])
+    except:
+        print(f"Cannot load model", file=sys.stderr)
+        sys.exit(1)
 
     # predict
     label = model(img)
