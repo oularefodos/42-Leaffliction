@@ -1,0 +1,1 @@
+IMAGE_EXTENSIONS = ['PNG', 'JPEG', 'JPG', 'jpg', 'png', 'jpg']
