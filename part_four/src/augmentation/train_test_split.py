@@ -9,7 +9,7 @@ def train_test_split(root: Path, train_size: float = 0.8, seed: Optional[int]=No
     """
     This function splits the dataset into train/test sets
     """
-    rng = random.Random(seed) if seed else random
+    rng = random.Random(seed) if seed is not None else random
 
     train_folder = Path('./augmented_data/train')
     test_folder = Path('./augmented_data/test')
