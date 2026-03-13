@@ -1,7 +1,7 @@
 import torch.nn as nn
 
 class CNN(nn.Module):
-    def __init__(self, in_channels=3, conv_hidden_channels=10, dense_hidden_size=256, output_size=10) -> None:
+    def __init__(self, in_channels=3, conv_hidden_channels=10, dense_hidden_size=256, output_size=8) -> None:
         super(CNN, self).__init__()
         self.conv1 = nn.Sequential(
             nn.Conv2d(
