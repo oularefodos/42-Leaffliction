@@ -4,7 +4,7 @@ from torchvision.datasets import ImageFolder
 import torchvision.transforms as transforms
 
 BATCH_SIZE = 64
-NUM_WORKERS=2
+NUM_WORKERS=0
 transform = transforms.Compose([
     transforms.Resize(size=(128, 128)),
     transforms.ToTensor()

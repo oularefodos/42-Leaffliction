@@ -5,14 +5,13 @@ from .constants import IMAGE_EXTENSIONS
 def is_image(path: Path):
     if not path.is_file():
         return False
-    return path.suffix.upper().lstrip('.') in IMAGE_EXTENSIONS
+    return path.suffix.upper().lstrip('.') in ['PNG', 'JPEG', 'JPG']
 
 def is_valid_dataset(root: Path):
     """checks that the folder have at least
     two subfolders filled with images"""
     valid_folders = 0
     for item in root.iterdir():
-        print(f"Checking {item}...")
         if item.is_dir():
             n_images = sum([len(list(item.glob(f"*.{ext}"))) for ext in IMAGE_EXTENSIONS])
             if n_images >= 1:

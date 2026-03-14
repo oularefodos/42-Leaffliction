@@ -1,15 +1,14 @@
 import argparse
 import os
+from pathlib import Path
 import matplotlib.pyplot as plt
-import imghdr
 
-def is_image(file_path):
-    if not os.path.isfile(file_path):
+IMAGE_EXTENSIONS = ['PNG', 'JPEG', 'JPG', 'jpg', 'png', 'jpg']
+
+def is_image(path: Path):
+    if not path.is_file():
         return False
-    try:
-        return imghdr.what(file_path) is not None
-    except:
-        return False
+    return path.suffix.upper().lstrip('.') in IMAGE_EXTENSIONS
 
 def plot_distrubution(distribution_data):
     classes = list(distribution_data.keys())
@@ -33,12 +32,12 @@ def plot_distrubution(distribution_data):
     plt.tight_layout()
     plt.show()
 
-def distribution(path, distribution_data):
-    for item in os.listdir(path):
-        current_full_path = os.path.join(path, item)
-        parent_name = os.path.basename(path)
+def distribution(path: Path, distribution_data: dict):
+    for item in path.iterdir():
+        current_full_path = item
+        parent_name = path.name
 
-        if os.path.isdir(current_full_path):
+        if current_full_path.is_dir():
             distribution(current_full_path, distribution_data)
         else:
             isImg = is_image(current_full_path);
@@ -57,10 +56,10 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    folderPath = args.folderPath
+    folderPath = Path(args.folderPath)
 
     distribution_data = {}
-    if os.path.isdir(folderPath):
+    if folderPath.is_dir():
         distribution(folderPath, distribution_data);
         sorted_data_desc = dict(sorted(distribution_data.items(), key=lambda item: item[1], reverse=True))
         plot_distrubution(sorted_data_desc)

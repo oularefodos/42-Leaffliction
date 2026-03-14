@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 
 def display_images(images ):
     plt.figure(figsize=(10, 5))
-    for title, img in images:
-        plt.subplot(1, len(images), images.index((title, img)) + 1)
+    for i, (title, img) in enumerate(images):
+        plt.subplot(1, len(images), i + 1)
         plt.imshow(cv.cvtColor(img, cv.COLOR_BGR2RGB))
         plt.title(title)
         plt.axis('off')

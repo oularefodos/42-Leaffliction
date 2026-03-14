@@ -1,5 +1,7 @@
+#!./menv/bin/python
 from pathlib import Path
 import sys
+from tqdm import tqdm
 
 from .transformation import (
     get_projective_image,
@@ -34,10 +36,10 @@ def augment_image(image_path: Path, transfor_max=6):
         sys.exit(1)
     images = []
     transformations = [
-        ('Flipped', flip_image(img, 1)),
-        ('Rotated', rotate_image(img, 45)),
-        ('Blurred', blur_image(img, 5)),
-        ('Scaled', scale_image(img, 1.3)),
+        ('Flip', flip_image(img, 1)),
+        ('Rotate', rotate_image(img, 45)),
+        ('Blur', blur_image(img, 5)),
+        ('Scale', scale_image(img, 1.3)),
         ('Contrast', add_contrast(img, 1.5)),
         ('Projective', get_projective_image(img))
     ]
@@ -65,26 +67,25 @@ def balance_classes(root: Path, save_in_same_folder=False):
             n_images = len(images)
             needed_augmentations = total_images_after_augmentation - n_images
 
-            print(f"needed_augmentations: {needed_augmentations}, max images: {total_images_after_augmentation}, n_images: {n_images}")
-            if needed_augmentations > 0:
-                for im in images:
-                    if needed_augmentations >= 0:
-                        augmented_images = augment_image(im, transfor_max=needed_augmentations)
-                        for prefix, aug_img in augmented_images:
-                            if needed_augmentations <= 0:
-                                break
-                            if save_in_same_folder:
-                                output_path = im.parent / f"{im.stem}_{prefix}{im.suffix}"
-                            else:
-                                output_dir = Path(aumented_dataset_main_path) / item.name
-                                output_dir.mkdir(parents=True, exist_ok=True)
-                                output_path = output_dir / f"{im.stem}_{prefix}{im.suffix}"
-                            cv.imwrite(str(output_path), aug_img)
-                            needed_augmentations -= 1
-                    # write the original image to the augmented dataset as well
-                    if not save_in_same_folder:
-                        output_dir = Path(aumented_dataset_main_path) / item.name
-                        output_dir.mkdir(parents=True, exist_ok=True)
-                        output_path = output_dir / im.name
-                        cv.imwrite(str(output_path), cv.imread(str(im)))
-                        print(f"Saved augmented image to {output_path}. Remaining augmentations needed: {needed_augmentations}")
+            # print(f"needed_augmentations: {needed_augmentations}, max images: {total_images_after_augmentation}, n_images: {n_images}")
+            for im in tqdm(images, desc=f"Augmenting {item.name}"):
+                if needed_augmentations >= 0:
+                    augmented_images = augment_image(im, transfor_max=needed_augmentations)
+                    for prefix, aug_img in augmented_images:
+                        if needed_augmentations <= 0:
+                            break
+                        if save_in_same_folder:
+                            output_path = im.parent / f"{im.stem}_{prefix}{im.suffix}"
+                        else:
+                            output_dir = Path(aumented_dataset_main_path) / item.name
+                            output_dir.mkdir(parents=True, exist_ok=True)
+                            output_path = output_dir / f"{im.stem}_{prefix}{im.suffix}"
+                        cv.imwrite(str(output_path), aug_img)
+                        needed_augmentations -= 1
+                # write the original image to the augmented dataset as well
+                if not save_in_same_folder:
+                    output_dir = Path(aumented_dataset_main_path) / item.name
+                    output_dir.mkdir(parents=True, exist_ok=True)
+                    output_path = output_dir / im.name
+                    cv.imwrite(str(output_path), cv.imread(str(im)))
+                # print(f"Saved augmented image to {output_path}. Remaining augmentations needed: {needed_augmentations}")
