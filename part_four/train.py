@@ -1,5 +1,6 @@
 #!.venv/bin/python
 import sys
+from zipfile import Path
 import torch
 from torch.cpu import is_available
 from src.utils.seed import set_seed
@@ -8,6 +9,9 @@ from src.train.train import train
 from src.augmentation.augment import augment
 from src.utils.parse_folder import parse_folder
 from src.model.cnn import CNN
+sys.path.append(str(Path(__file__).resolve().parents[1]))
+from part_three.utils.transform_utils import get_image_transformations
+from part_two.utils.augmentation import balance_classes
 
 
 def main():
@@ -33,7 +37,7 @@ def main():
         test_loader=test_dl,
         model=model,
         device=device,
-        epochs=20
+        epochs=30
     )
 
     # saving the model parameters

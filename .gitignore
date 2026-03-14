@@ -1,7 +1,10 @@
+data/
+menv/
+images/
 .venv
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 *.ign.*
-*.pth
+leaves.zip
