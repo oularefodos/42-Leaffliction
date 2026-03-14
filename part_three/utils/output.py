@@ -35,7 +35,7 @@ class Output:
             self.filter: Filter = filter
 
             if not self.dst.exists():
-                raise ValueError('Destination folder does not exist')
+                self.dst.mkdir(parents=True)
             
             if not self.dst.is_dir():
                 raise ValueError(f'{dst} is not a directory.')

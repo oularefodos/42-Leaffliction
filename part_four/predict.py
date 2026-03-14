@@ -32,6 +32,7 @@ def main():
         classes = checkpoint['classes']
         model = CNN(output_size=len(classes))
         model.load_state_dict(checkpoint['model_state_dict'])
+        model.eval()
     except:
         print(f"Cannot load model", file=sys.stderr)
         sys.exit(1)

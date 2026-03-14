@@ -37,8 +37,8 @@ def augment_image(image_path: Path, transfor_max=6):
     images = []
     transformations = [
         ('Flip', flip_image(img, 1)),
-        ('Rotate', rotate_image(img, 45)),
-        ('Blur', blur_image(img, 5)),
+        ('Rotate', rotate_image(img, 20)),
+        ('Blur', blur_image(img, 3)),
         ('Scale', scale_image(img, 1.3)),
         ('Contrast', add_contrast(img, 1.5)),
         ('Projective', get_projective_image(img))

@@ -3,8 +3,7 @@ import sys
 from typing import Optional
 from .train_test_split import train_test_split
 
-sys.path.append(str(Path(__file__).resolve().parents[1]))
-
+sys.path.append(str(Path(__file__).resolve().parents[3]))
 from part_two.utils.augmentation import balance_classes
 
 def augment(root: Path, train_size=0.8, seed: Optional[int] = None):

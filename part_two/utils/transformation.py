@@ -24,10 +24,10 @@ def get_projective_image(image):
     ])
 
     dst = np.float32([
-        [(w - 1) * 0.25, 0],
-        [(w - 1) * 0.75, (h - 1) * 0.25],
-        [w - 1,          (h - 1) * 0.8 ],
-        [0,              (h - 1) * 0.5 ]
+        [0, 0],
+        [(w - 1) * 0.9 , (h - 1) * 0.1],
+        [w - 1, (h - 1)],
+        [(w - 1) * 0.1, (h - 1) * 0.9 ]
     ])
 
     M = cv.getPerspectiveTransform(src, dst)
