@@ -63,7 +63,7 @@ def main():
     ax2.axis('off')
     
     plt.tight_layout()
-    plt.show()
+    plt.savefig('./result.jpg')
     plt.close()
 
 if __name__ == "__main__":
