@@ -16,6 +16,7 @@ def plot_distrubution(distribution_data):
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
 
+
     colors = plt.get_cmap('tab10')(range(len(classes)))
 
 
@@ -30,7 +31,7 @@ def plot_distrubution(distribution_data):
     ax2.tick_params(axis='x', rotation=45)
 
     plt.tight_layout()
-    plt.show()
+    plt.savefig("distribution.png", format='png', dpi=300)
 
 def distribution(path: Path, distribution_data: dict):
     for item in path.iterdir():

@@ -2,14 +2,16 @@ import numpy as np
 import cv2 as cv
 import matplotlib.pyplot as plt
 
-def display_images(images ):
+def display_images(images, global_title="Transformed Images"):
     plt.figure(figsize=(10, 5))
+    plt.suptitle(global_title, fontsize=16, fontweight='bold')
     for i, (title, img) in enumerate(images):
         plt.subplot(1, len(images), i + 1)
         plt.imshow(cv.cvtColor(img, cv.COLOR_BGR2RGB))
         plt.title(title)
         plt.axis('off')
-    plt.show()
+    plt.tight_layout()
+    plt.savefig("transformed_images.png", format='png', dpi=300)
 
 def get_projective_image(image):
     h, w = image.shape[:2]
