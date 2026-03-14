@@ -31,7 +31,7 @@ def main():
     # training the model
     set_seed(42)
     train_dl, test_dl, classes = make_dataloaders(train_path, test_path)
-    model = CNN().to(device)
+    model = CNN(output_size=len(classes)).to(device)
     model = train(
         train_loader=train_dl,
         test_loader=test_dl,

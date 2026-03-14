@@ -1,7 +1,7 @@
 import torch.nn as nn
 
 class CNN(nn.Module):
-    def __init__(self, in_channels=3, conv_hidden_channels=10, dense_hidden_size=100, output_size=10) -> None:
+    def __init__(self, in_channels=3, conv_hidden_channels=10, dense_hidden_size=256, output_size=8) -> None:
         super(CNN, self).__init__()
         self.conv1 = nn.Sequential(
             nn.Conv2d(
@@ -39,7 +39,9 @@ class CNN(nn.Module):
         )
         self.dense = nn.Sequential(
             nn.Flatten(),
-            nn.LazyLinear(dense_hidden_size),
+            nn.LazyLinear(dense_hidden_size * 2),
+            nn.ReLU(),
+            nn.Linear(dense_hidden_size * 2, dense_hidden_size),
             nn.ReLU(),
             nn.Linear(dense_hidden_size, output_size)
         )

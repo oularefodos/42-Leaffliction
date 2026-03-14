@@ -22,9 +22,9 @@ def plot_transformations(img):
         ax.axis('off')
     
     plt.tight_layout()
-    plt.show()
+    plt.savefig('./transformations.jpg')
     plt.close()
 
     hist = get_histogram(img)
-    hist.show()
+    hist.savefig('./histogram.jpg')
     plt.close()
